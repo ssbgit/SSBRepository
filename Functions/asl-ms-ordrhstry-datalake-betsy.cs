@@ -33,7 +33,7 @@ namespace emrsn.com.fun.datalake
         [OpenApiParameter(name: "ToDate", In = ParameterLocation.Query, Required = false, Type = typeof(string), Description = "To Date")]
         [OpenApiParameter(name: "OrderNumber", In = ParameterLocation.Query, Required = false, Type = typeof(string), Description = "")]
         [OpenApiParameter(name: "CustomerPoNumber", In = ParameterLocation.Query, Required = false, Type = typeof(string), Description = "Customer PO Number")]
-        [OpenApiParameter(name: "OrderStatus", In = ParameterLocation.Query, Required = false, Type = typeof(string), Description = "{ In Process, Cancelled,  Closed, Received, Booked,In Active, Approved } ")]
+        [OpenApiParameter(name: "OrderStatus", In = ParameterLocation.Query, Required = false, Type = typeof(string), Description = "{ In Process} ")]
         [OpenApiParameter(name: "OrderedFrom", In = ParameterLocation.Query, Required = false, Type = typeof(string), Description = "Ordered From" )]
         [OpenApiParameter(name: "SerialNumber", In = ParameterLocation.Query, Required = false, Type = typeof(string), Description = "Serial Number ")]
         [OpenApiParameter(name: "GSOrderNumber", In = ParameterLocation.Query, Required = false, Type = typeof(string), Description = "GS Order Number")]
