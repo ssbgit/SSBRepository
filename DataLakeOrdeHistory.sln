@@ -5,8 +5,6 @@ VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataLakeOrdeHistory", "DataLakeOrdeHistory.csproj", "{EF1DFC38-8F8C-4075-905B-4D007BAB58E4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "az_Order_history_datalake", "..\..\AzureDevelopment\az_Order_history_datalake\az_Order_history_datalake.csproj", "{8D433ACC-5207-419C-A784-0A7403BA2D0A}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{91B0EF75-8420-4E26-BFEC-4A67B25B0048}"
 EndProject
 Global
