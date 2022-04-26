@@ -43,7 +43,7 @@ namespace emrsn.com.fun.datalake
         [OpenApiParameter(name: "LanguageCode", In = ParameterLocation.Query, Required = false, Type = typeof(string), Description = "Language Code")]
         [OpenApiParameter(name: "SourceSystem", In = ParameterLocation.Query, Required = false, Type = typeof(string), Description = "Source System of Request")]
         
-      //  [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SalesOrder), Description = "The OK response")]
+      //  [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SalesOrder), Description = "The OK response of service")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrder), Description = "Successfully Completed")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.InternalServerError, contentType: "application/json", bodyType: typeof(Response), Description = "Server Error")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.BadRequest, contentType: "application/json", bodyType: typeof(Response), Description = "Bad Request")]
