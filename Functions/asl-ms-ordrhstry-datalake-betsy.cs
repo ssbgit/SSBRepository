@@ -81,8 +81,9 @@ namespace emrsn.com.fun.datalake
                     string _LanguageCode= req.Query["LanguageCode"];
                     string _SourceSystem= req.Query["SourceSystem"];
 
+string inputParams=_InstanceID + ","+ _CustomerAccId + "," +_FromDate + "," +_ToDate + "," +_OrderNumber + "," +_CustomerPoNumber + "," +_OrderStatusCode + "," + _OrderStatus+ "," + _OrderedFrom+ "," + _SerialNumber+ "," +_GSOrderNumber + "," +_OrderedBy + "," +_ActionType + "," +_RecipientEmailId + "," +_LanguageCode ;
 
-                
+              string[] _sqlDbParams=inputParams.Split(",");
             SalesOrder _obSalesOrder=new SalesOrder();
            
               List<DataArea> _lstDataArea =new List<DataArea>();
@@ -100,8 +101,8 @@ namespace emrsn.com.fun.datalake
               
            string _statement =System.Environment.GetEnvironmentVariable("SQL_CMD_ORERHISTORY_BETSY"); 
           
-            SqlDataReader _reader =_obCOnnection.DataReader(_statement,_InstanceID,_CustomerAccId,_FromDate,_ToDate,_OrderNumber,_CustomerPoNumber, _OrderStatusCode,_OrderStatus,_OrderedFrom,_SerialNumber,_GSOrderNumber,_OrderedBy,_ActionType,_RecipientEmailId,_LanguageCode);
-
+           // SqlDataReader _reader =_obCOnnection.DataReader(_statement,_InstanceID,_CustomerAccId,_FromDate,_ToDate,_OrderNumber,_CustomerPoNumber, _OrderStatusCode,_OrderStatus,_OrderedFrom,_SerialNumber,_GSOrderNumber,_OrderedBy,_ActionType,_RecipientEmailId,_LanguageCode);
+ SqlDataReader _reader =_obCOnnection.DataReader(_statement,_sqlDbParams);
 
   if(_reader.HasRows)
   {
