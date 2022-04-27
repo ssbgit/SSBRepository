@@ -57,7 +57,6 @@ namespace emrsn.com.fun.datalake
             string[] _param=_spParams.Split(",");
             SqlCommand cmd = new SqlCommand(_sqlCommand,con);  
             SqlParameter param1 = new SqlParameter();
-          //  param1.ParameterName = "@InstanceID ";
             param1.ParameterName = _param[0].ToString();
             param1.SqlDbType = SqlDbType.VarChar;
             param1.Value = InstanceID;
