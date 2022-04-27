@@ -171,8 +171,7 @@ namespace emrsn.com.fun.datalake
             string _msBusinessFault =System.Environment.GetEnvironmentVariable("BUSINESS_FAULT"); 
           
               List<DataArea> _lstDataArea =new List<DataArea>();
-              FaultNotification _obMsFaultNotification = new FaultNotification();
-                while (_reader.Read())
+               while (_reader.Read())
                 {
                     if(_reader["ErrorFlag"].ToString()!="Y")
                     {                                 
@@ -182,13 +181,13 @@ namespace emrsn.com.fun.datalake
                OrderHeader _obOrderHeader=new OrderHeader();              
                _obOrderHeader.OriginatingSystem=_reader["SourceSystem"].Equals(System.DBNull.Value)? null : _reader["SourceSystem"].ToString();		
                _obOrderHeader.OrderGID=_reader["GOSNumber"].Equals(System.DBNull.Value)? null : _reader["GOSNumber"].ToString();		
-               _obOrderHeader.OrgId=_reader["OrganizationID"].Equals(System.DBNull.Value)? null : _reader["OrganizationID"].ToString();		
-               _obOrderHeader.CustomerPONbr=_reader["CustomerPONumber"].Equals(System.DBNull.Value)?  null : _reader["CustomerPONumber"].ToString();
-               _obOrderHeader.OrderNbr=_reader["OrderNumber"].Equals(System.DBNull.Value)?  null : _reader["OrderNumber"].ToString();
-               _obOrderHeader.HeaderId=_reader["HeaderID"].Equals(System.DBNull.Value)?  null : _reader["HeaderID"].ToString();
+               _obOrderHeader.OrgId= _reader["OrganizationID"].ToString();		
+               _obOrderHeader.CustomerPONbr=_reader["CustomerPONumber"].ToString();
+               _obOrderHeader.OrderNbr=_reader["OrderNumber"].ToString();
+               _obOrderHeader.HeaderId=_reader["HeaderID"].ToString();
                _obOrderHeader.OrderDate=Convert.ToDateTime(_reader["OrderDate"]);
-               _obOrderHeader.CurrencyCode=_reader["OrderCurrencyCode"].Equals(System.DBNull.Value)?  null : _reader["OrderCurrencyCode"].ToString();
-               _obOrderHeader.OrderStatus=_reader["GroupedOrderStatus"].Equals(System.DBNull.Value)?  null: _reader["GroupedOrderStatus"].ToString();
+               _obOrderHeader.CurrencyCode=_reader["OrderCurrencyCode"].ToString();
+               _obOrderHeader.OrderStatus= _reader["GroupedOrderStatus"].ToString();
                _obOrderHeader.EBSOU=_reader["OperatingUnit"].Equals(System.DBNull.Value)?  null : _reader["OperatingUnit"].ToString();
                _obOrderHeader.BookedBy=_reader["SoldToContactID"].Equals(System.DBNull.Value)? null : _reader["SoldToContactID"].ToString();             
                _obOrderHeader.OrderSource=_reader["OrganizationID"].Equals(System.DBNull.Value)? null : _reader["OrganizationID"].ToString();		
@@ -229,7 +228,7 @@ namespace emrsn.com.fun.datalake
                 else 
                 {
 
-                     _obMsFaultNotification= faultMessageMapping(_microserviceName,DateTime.Now.ToString(),_msBusinessFaultCode,_msBusinessFault,_reader["ErrorMessage"].ToString(),"");
+                      _lstDataArea=null;
                       
                 }
              }
