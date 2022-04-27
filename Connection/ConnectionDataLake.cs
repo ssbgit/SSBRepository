@@ -13,26 +13,25 @@ namespace emrsn.com.fun.datalake
     public class ConnectionDataLake  
     {  
   
-      string ConnectionString = System.Environment.GetEnvironmentVariable("SQL_POOL_CONN_PROD_BETSY"); 
+     
   SqlConnection con;  
-      // string ConnectionString = "Server=tcp:ws-eus-synapse-001.sql.azuresynapse.net ,1433;Initial Catalog=SQL_FLMC;Persist Security Info=False;User ID=FLMC_SQL_POOL_Reader;Password=Ncf9V2deEKrc0yzEGshn21dc;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30"; 
 
+  
         public void OpenConection()  
         {  
-            /*
+            
             var _midObject=System.Environment.GetEnvironmentVariable("Managedidentity");
-             string secretName = "SQL-POOL-CONN-PROD-BETSY";
+            string secretName = System.Environment.GetEnvironmentVariable("SECRET_NAME");
             var keyVaultName = System.Environment.GetEnvironmentVariable("KEY_VAULT_NAME");
             var kvUri = $"https://{keyVaultName}.vault.azure.net";           
 
             var client = new SecretClient(new Uri(kvUri), new DefaultAzureCredential(new DefaultAzureCredentialOptions { ManagedIdentityClientId =_midObject}));
             var secret = client.GetSecret(secretName);
-            
 
-        string _secretConnString=secret.Value.Value; 
-*/
+        string _secretConnString=secret.Value.Value;
+
             
-            con = new SqlConnection(ConnectionString);
+            con = new SqlConnection(_secretConnString);
             con.Open();  
         }  
   
@@ -50,7 +49,7 @@ namespace emrsn.com.fun.datalake
         }  
   
   
-        public SqlDataReader DataReader(string _sqlCommand,string InstanceID,string CustomerAccId,string FromDate,string ToDate,string OrderNumber,string CustomerPoNumber,string OrderStatusCode ,string OrderStatus,string OrderedFrom,string SerialNumber,string GSOrderNumber,string OrderedBy,string ActionType,string RecipientEmailId,string LanguageCode )  
+             public SqlDataReader DataReader(string _sqlCommand,string InstanceID,string CustomerAccId,string FromDate,string ToDate,string OrderNumber,string CustomerPoNumber,string OrderStatusCode ,string OrderStatus,string OrderedFrom,string SerialNumber,string GSOrderNumber,string OrderedBy,string ActionType,string RecipientEmailId,string LanguageCode )  
         {  
 
              string _spParams=System.Environment.GetEnvironmentVariable("SP_INPUT_PARAMS"); 
@@ -126,7 +125,7 @@ namespace emrsn.com.fun.datalake
             cmd.Parameters.Add(param10);
 			
 			
-			SqlParameter param11 = new SqlParameter();
+	    SqlParameter param11 = new SqlParameter();
             param11.ParameterName =  _param[11].ToString();
             param11.SqlDbType = SqlDbType.VarChar;
             param11.Value = OrderedBy;
@@ -134,7 +133,7 @@ namespace emrsn.com.fun.datalake
 			
 			
 			
-			SqlParameter param12 = new SqlParameter();
+	    SqlParameter param12 = new SqlParameter();
             param12.ParameterName =  _param[12].ToString();
             param12.SqlDbType = SqlDbType.VarChar;
             param12.Value = ActionType;
@@ -142,15 +141,15 @@ namespace emrsn.com.fun.datalake
 			
 			
 			
-			SqlParameter param13 = new SqlParameter();
+	    SqlParameter param13 = new SqlParameter();
             param13.ParameterName =  _param[13].ToString();
             param13.SqlDbType = SqlDbType.VarChar;
             param13.Value = RecipientEmailId;
-             cmd.Parameters.Add(param13);
+            cmd.Parameters.Add(param13);
 			
 			
 			
-			SqlParameter param14 = new SqlParameter();
+	    SqlParameter param14 = new SqlParameter();
             param14.ParameterName =  _param[14].ToString();
             param14.SqlDbType = SqlDbType.VarChar;
             param14.Value = LanguageCode;
@@ -173,10 +172,9 @@ namespace emrsn.com.fun.datalake
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.CommandTimeout=3000;
             SqlDataReader dr = cmd.ExecuteReader();  
-            return dr;  
-        } 
-
-         
+            return dr;   
+        }  
+  
   
         
     }  
