@@ -33,7 +33,7 @@ namespace emrsn.com.fun.datalake
         [OpenApiParameter(name: "ToDate", In = ParameterLocation.Query, Required = false, Type = typeof(string), Description = "To Date")]
         [OpenApiParameter(name: "OrderNumber", In = ParameterLocation.Query, Required = false, Type = typeof(string), Description = "")]
         [OpenApiParameter(name: "CustomerPoNumber", In = ParameterLocation.Query, Required = false, Type = typeof(string), Description = "Customer PO Number")]
-        [OpenApiParameter(name: "OrderStatus", In = ParameterLocation.Query, Required = false, Type = typeof(string), Description = "{ In Process} ")]
+        [OpenApiParameter(name: "OrderStatus", In = ParameterLocation.Query, Required = false, Type = typeof(string), Description = "{ In Process, Cancelled,  Closed, Received, Booked,In Active, Approved } ")]
         [OpenApiParameter(name: "OrderedFrom", In = ParameterLocation.Query, Required = false, Type = typeof(string), Description = "Ordered From" )]
         [OpenApiParameter(name: "SerialNumber", In = ParameterLocation.Query, Required = false, Type = typeof(string), Description = "Serial Number ")]
         [OpenApiParameter(name: "GSOrderNumber", In = ParameterLocation.Query, Required = false, Type = typeof(string), Description = "GS Order Number")]
@@ -41,9 +41,9 @@ namespace emrsn.com.fun.datalake
         [OpenApiParameter(name: "ActionType", In = ParameterLocation.Query, Required = false, Type = typeof(string), Description = "Action Type Email ")]
         [OpenApiParameter(name: "RecipientEmailId", In = ParameterLocation.Query, Required = false, Type = typeof(string), Description = "Recipient Email Id")]
         [OpenApiParameter(name: "LanguageCode", In = ParameterLocation.Query, Required = false, Type = typeof(string), Description = "Language Code")]
-        [OpenApiParameter(name: "SourceSystem", In = ParameterLocation.Query, Required = false, Type = typeof(string), Description = "Source System of Request for tsting as it sond like this so what to do uys i am speechless and have no idea if its goiing to work or not however i need to try this ...........................****************************************************************************************************************************************************************************************************************************.....................................................................................................................")]
+        [OpenApiParameter(name: "SourceSystem", In = ParameterLocation.Query, Required = false, Type = typeof(string), Description = "Source System of Request")]
         
-      //  [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SalesOrder), Description = "The OK response of service")]
+      //  [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SalesOrder), Description = "The OK response")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrder), Description = "Successfully Completed")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.InternalServerError, contentType: "application/json", bodyType: typeof(Response), Description = "Server Error")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.BadRequest, contentType: "application/json", bodyType: typeof(Response), Description = "Bad Request")]
@@ -94,7 +94,7 @@ namespace emrsn.com.fun.datalake
 
             log.LogInformation($"********Started Order History Microservice with  Trnsaction Id = {_transactionId} , ****************");   
             log.LogInformation($"******** Trnsaction Id = {_transactionId} , Input Query Params : #InstanceID, #CustomerAccId, #FromDate, #ToDate, #OrderNumber, #CustomerPoNumber, # OrderStatusCode, #OrderStatus, #OrderedFrom, #SerialNumber, #GSOrderNumber, #OrderedBy, #ActionType, #RecipientEmailId, #LanguageCode, #SourceSystem  ****");   
-            log.LogInformation($"******** Trnsaction Id for this request = {_transactionId} , Values : # { _InstanceID } ,# { _CustomerAccId } ,# { _FromDate } ,# { _ToDate } ,# { _OrderNumber } ,# { _CustomerPoNumber } ,# { _OrderStatus } ,# { _OrderStatusCode } ,# { _OrderedFrom } ,# { _SerialNumber } ,# { _GSOrderNumber } ,# { _OrderedBy } ,# { _ActionType } ,# { _RecipientEmailId } ,# { _LanguageCode } ,# { _SourceSystem }  ****");               
+            log.LogInformation($"******** Trnsaction Id = {_transactionId} , Values : # { _InstanceID } ,# { _CustomerAccId } ,# { _FromDate } ,# { _ToDate } ,# { _OrderNumber } ,# { _CustomerPoNumber } ,# { _OrderStatus } ,# { _OrderStatusCode } ,# { _OrderedFrom } ,# { _SerialNumber } ,# { _GSOrderNumber } ,# { _OrderedBy } ,# { _ActionType } ,# { _RecipientEmailId } ,# { _LanguageCode } ,# { _SourceSystem }  ****");               
               try{         
             _obCOnnection.OpenConection();   
               
