@@ -1,4 +1,3 @@
-using System.IO;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
@@ -12,7 +11,7 @@ using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using System.Data.SqlClient;
 using System;
-using System.Data; 
+
 
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 
@@ -20,7 +19,7 @@ using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 
 namespace emrsn.com.fun.datalake
 {
-    internal class GetorderHistory
+    public class GetorderHistory
     {
 
 
@@ -43,7 +42,7 @@ namespace emrsn.com.fun.datalake
         [OpenApiParameter(name: "LanguageCode", In = ParameterLocation.Query, Required = false, Type = typeof(string), Description = "Language Code")]
         [OpenApiParameter(name: "SourceSystem", In = ParameterLocation.Query, Required = false, Type = typeof(string), Description = "Source System of Request")]
         
-      //  [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SalesOrder), Description = "The OK response")]
+     
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrder), Description = "Successfully Completed")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.InternalServerError, contentType: "application/json", bodyType: typeof(Response), Description = "Server Error")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.BadRequest, contentType: "application/json", bodyType: typeof(Response), Description = "Bad Request")]
@@ -53,6 +52,8 @@ namespace emrsn.com.fun.datalake
         public async Task<IActionResult> GetOrderHistoryBetsy(
             [HttpTrigger(AuthorizationLevel.Function, "get",Route = "asl-ms-ordrhstry-datalake-betsy/GetOrderHistoryBetsy")] HttpRequest req, ILogger log)
         {
+
+
              ConnectionDataLake _obCOnnection=new ConnectionDataLake();
              GetOrderHistoryResponse _response = new GetOrderHistoryResponse();
              Guid _transactionId =Guid.NewGuid();
@@ -60,9 +61,12 @@ namespace emrsn.com.fun.datalake
             Initialising business fault variables
             */
 
+
             string _microserviceName=System.Environment.GetEnvironmentVariable("MS_INTERFACE_BETSY"); 
             string _msBusinessFaultCode=System.Environment.GetEnvironmentVariable("BUSINESS_FAULT_CODE"); 
             string _msBusinessFault =System.Environment.GetEnvironmentVariable("BUSINESS_FAULT"); 
+
+            
 
                     string _InstanceID= System.Environment.GetEnvironmentVariable("INSTANCE_ID_BETSY"); 
                     string _CustomerAccId= req.Query["CustomerAccId"];
@@ -87,10 +91,9 @@ namespace emrsn.com.fun.datalake
            
               List<DataArea> _lstDataArea =new List<DataArea>();
               FaultNotification _obMsFaultNotification = new FaultNotification();
-              FaultMessage _obFaultMessage=new FaultMessage();
-
-
-            
+              FaultMessage _obFaultMessage=new FaultMessage(); 
+              
+          
 
             log.LogInformation($"********Started Order History Microservice with  Trnsaction Id = {_transactionId} , ****************");   
             log.LogInformation($"******** Trnsaction Id = {_transactionId} , Input Query Params : #InstanceID, #CustomerAccId, #FromDate, #ToDate, #OrderNumber, #CustomerPoNumber, # OrderStatusCode, #OrderStatus, #OrderedFrom, #SerialNumber, #GSOrderNumber, #OrderedBy, #ActionType, #RecipientEmailId, #LanguageCode, #SourceSystem  ****");   
@@ -105,92 +108,17 @@ namespace emrsn.com.fun.datalake
 
   if(_reader.HasRows)
   {
-                while (_reader.Read())
-                {
-                    if(_reader["ErrorFlag"].ToString()!="Y")
-                    {                                 
-           
-             List<OrderHeader> _lsOrderHeader =new List<OrderHeader>();
-             List<PaymentTerm> _lstPaymentTerm=new List<PaymentTerm>();
-             List<SalesOrderHeader> _lstSalesOrderHeader=new List<SalesOrderHeader>();
-             List<SalesOrderLine> _lstSalesOrderLine=new List<SalesOrderLine>();
-
-
-
-// *****************  Set "Sales Order Header"  part of CDM ************* //                   
-   OrderHeader _obOrderHeader=new OrderHeader();
-              
-               _obOrderHeader.OriginatingSystem=_reader["SourceSystem"].Equals(System.DBNull.Value)? null : _reader["SourceSystem"].ToString();		
-               _obOrderHeader.OrderGID=_reader["GOSNumber"].Equals(System.DBNull.Value)? null : _reader["GOSNumber"].ToString();		
-               _obOrderHeader.OrgId=_reader["OrganizationID"].Equals(System.DBNull.Value)? null : _reader["OrganizationID"].ToString();		
-               _obOrderHeader.CustomerPONbr=_reader["CustomerPONumber"].Equals(System.DBNull.Value)?  null : _reader["CustomerPONumber"].ToString();
-               _obOrderHeader.OrderNbr=_reader["OrderNumber"].Equals(System.DBNull.Value)?  null : _reader["OrderNumber"].ToString();
-               _obOrderHeader.HeaderId=_reader["HeaderID"].Equals(System.DBNull.Value)?  null : _reader["HeaderID"].ToString();
-               _obOrderHeader.OrderDate=Convert.ToDateTime(_reader["OrderDate"]);
-               _obOrderHeader.CurrencyCode=_reader["OrderCurrencyCode"].Equals(System.DBNull.Value)?  null : _reader["OrderCurrencyCode"].ToString();
-               _obOrderHeader.OrderStatus=_reader["GroupedOrderStatus"].Equals(System.DBNull.Value)?  null: _reader["GroupedOrderStatus"].ToString();
-               _obOrderHeader.EBSOU=_reader["OperatingUnit"].Equals(System.DBNull.Value)?  null : _reader["OperatingUnit"].ToString();
-               _obOrderHeader.BookedBy=_reader["SoldToContactID"].Equals(System.DBNull.Value)? null : _reader["SoldToContactID"].ToString();             
-               _obOrderHeader.OrderSource=_reader["OrganizationID"].Equals(System.DBNull.Value)? null : _reader["OrganizationID"].ToString();		
-              _obOrderHeader.AssociatedAccount=_CustomerAccId;
-
-         ShippingProfile _obSHippingProfile=new ShippingProfile();
-                         _obSHippingProfile.ShipCode= _reader["ShippingMethodID"].Equals(System.DBNull.Value)?  null : _reader["ShippingMethodID"].ToString();
-              
-               _obOrderHeader.ShippingProfile=_obSHippingProfile;
-
-
-                            SalesOrderSchedule _obSalesOrderSchedule=new SalesOrderSchedule();
-                                               _obSalesOrderSchedule.TotalAmount=_reader["ExtendedPriceDC"].Equals(System.DBNull.Value)?  "0" : _reader["ExtendedPriceDC"].ToString();
-
-                                               SalesOrderShipment _obSalesOrderShipment=new SalesOrderShipment();
-                                                                  _obSalesOrderShipment.TrackingNumber=_reader["TrackingNumber"].Equals(System.DBNull.Value)?  null : _reader["TrackingNumber"].ToString();
-
-                                              _obSalesOrderSchedule.SalesOrderShipment=_obSalesOrderShipment;
-                          SalesOrderLine _obSalesOrderLine=new SalesOrderLine();
-                                        _obSalesOrderLine.SalesOrderSchedule=_obSalesOrderSchedule;
-
-
-                SalesOrderHeader _obSalesOrderHeader = new SalesOrderHeader();                   
-                                _obSalesOrderHeader.OrderHeader=_obOrderHeader;
-                           
-
-                _lstSalesOrderHeader.Add(_obSalesOrderHeader);
-                _lstSalesOrderLine.Add(_obSalesOrderLine);
-                          
-                          
-                            DataArea _obDataArea=new DataArea();
-                           _obDataArea.SalesOrderHeader=_lstSalesOrderHeader;
-                           _obDataArea.SalesOrderLine=_lstSalesOrderLine;
-                          _lstDataArea.Add(_obDataArea);
-
-                }
-                else 
-                {
-                        _obMsFaultNotification.BusinessComponentID=_microserviceName; 
-                        _obMsFaultNotification.ReportingDateTime=DateTime.Now.ToString();
-                                _obFaultMessage.FaultCode=_msBusinessFaultCode; 
-                                _obFaultMessage.FaultCategory=_msBusinessFault; 
-                                _obFaultMessage.FaultDescription=_reader["ErrorMessage"].ToString();
-                        _obMsFaultNotification.FaultMessage=_obFaultMessage;
-                        _obMsFaultNotification.CorrectiveAction="Y";
-
-                }
-             }
+    
+        _lstDataArea= dataMapping(_reader,_CustomerAccId);
   }
-            else
-            {
-                                _obMsFaultNotification.BusinessComponentID=_microserviceName; 
-                                  _obMsFaultNotification.ReportingDateTime=DateTime.Now.ToString();
-                                          _obFaultMessage.FaultCode=_msBusinessFaultCode; 
-                                          _obFaultMessage.FaultCategory=_msBusinessFault; 
-                                          _obFaultMessage.FaultDescription=System.Environment.GetEnvironmentVariable("BUSINESS_FAULT_NO_DATA"); 
-                                          _obFaultMessage.FaultTrace="";
-                                  _obMsFaultNotification.FaultMessage=_obFaultMessage;
+     else
+   {
 
-            }
+     _obMsFaultNotification= faultMessageMapping(_microserviceName,DateTime.Now.ToString(),_msBusinessFaultCode,_msBusinessFault,System.Environment.GetEnvironmentVariable("BUSINESS_FAULT_NO_DATA").ToString(),"");
+
+    }
                        _obCOnnection.CloseConnection();  
-                      }
+              }
                 catch (Exception ex)
                 {
                         _obCOnnection.CloseConnection();
@@ -226,14 +154,129 @@ namespace emrsn.com.fun.datalake
                            _obSalesOrder.MessageHeader=_obMessageHeader;
 
 
-                _response.SalesOrder=_obSalesOrder;
-          
+                _response.SalesOrder=_obSalesOrder;         
 
           
             log.LogInformation($"********End of the Microservice Response Transaction Id = {_transactionId}  ****************");   
             return new OkObjectResult(JsonConvert.SerializeObject(_response, Formatting.Indented));
         }
 
+     /// <summary>
+    /// This fundtion is used to map the SQL DB Pool SP response to Microservice CDM.
+    /// </summary>
+     /// <returns>Returns the DataArea Array/List of Sales Order.</returns>
+         public List<DataArea> dataMapping (SqlDataReader _reader,string _CustomerAccId )
+         {
+
+            string _microserviceName=System.Environment.GetEnvironmentVariable("MS_INTERFACE_BETSY"); 
+            string _msBusinessFaultCode=System.Environment.GetEnvironmentVariable("BUSINESS_FAULT_CODE"); 
+            string _msBusinessFault =System.Environment.GetEnvironmentVariable("BUSINESS_FAULT"); 
+          
+              List<DataArea> _lstDataArea =new List<DataArea>();
+              FaultNotification _obMsFaultNotification = new FaultNotification();
+              FaultMessage _obFaultMessage=new FaultMessage(); 
+
+                while (_reader.Read())
+                {
+                    if(_reader["ErrorFlag"].ToString()!="Y")
+                    {                                 
+           
+             List<OrderHeader> _lsOrderHeader =new List<OrderHeader>();
+             List<PaymentTerm> _lstPaymentTerm=new List<PaymentTerm>();
+             List<SalesOrderHeader> _lstSalesOrderHeader=new List<SalesOrderHeader>();
+             List<SalesOrderLine> _lstSalesOrderLine=new List<SalesOrderLine>();                
+               OrderHeader _obOrderHeader=new OrderHeader();              
+               _obOrderHeader.OriginatingSystem=_reader["SourceSystem"].Equals(System.DBNull.Value)? null : _reader["SourceSystem"].ToString();		
+               _obOrderHeader.OrderGID=_reader["GOSNumber"].Equals(System.DBNull.Value)? null : _reader["GOSNumber"].ToString();		
+               _obOrderHeader.OrgId=_reader["OrganizationID"].Equals(System.DBNull.Value)? null : _reader["OrganizationID"].ToString();		
+               _obOrderHeader.CustomerPONbr=_reader["CustomerPONumber"].Equals(System.DBNull.Value)?  null : _reader["CustomerPONumber"].ToString();
+               _obOrderHeader.OrderNbr=_reader["OrderNumber"].Equals(System.DBNull.Value)?  null : _reader["OrderNumber"].ToString();
+               _obOrderHeader.HeaderId=_reader["HeaderID"].Equals(System.DBNull.Value)?  null : _reader["HeaderID"].ToString();
+               _obOrderHeader.OrderDate=Convert.ToDateTime(_reader["OrderDate"]);
+               _obOrderHeader.CurrencyCode=_reader["OrderCurrencyCode"].Equals(System.DBNull.Value)?  null : _reader["OrderCurrencyCode"].ToString();
+               _obOrderHeader.OrderStatus=_reader["GroupedOrderStatus"].Equals(System.DBNull.Value)?  null: _reader["GroupedOrderStatus"].ToString();
+               _obOrderHeader.EBSOU=_reader["OperatingUnitTesting"].Equals(System.DBNull.Value)?  null : _reader["OperatingUnit"].ToString();
+               _obOrderHeader.BookedBy=_reader["SoldToContactID"].Equals(System.DBNull.Value)? null : _reader["SoldToContactID"].ToString();             
+               _obOrderHeader.OrderSource=_reader["OrganizationID"].Equals(System.DBNull.Value)? null : _reader["OrganizationID"].ToString();		
+              _obOrderHeader.AssociatedAccount=_CustomerAccId;
+
+         ShippingProfile _obSHippingProfile=new ShippingProfile();
+                         _obSHippingProfile.ShipCode= _reader["ShippingMethodID"].Equals(System.DBNull.Value)?  null : _reader["ShippingMethodID"].ToString();
+              
+               _obOrderHeader.ShippingProfile=_obSHippingProfile;
+
+
+                            SalesOrderSchedule _obSalesOrderSchedule=new SalesOrderSchedule();
+                                               _obSalesOrderSchedule.TotalAmount=_reader["ExtendedPriceDC"].Equals(System.DBNull.Value)?  "0" : _reader["ExtendedPriceDC"].ToString();
+
+                                               SalesOrderShipment _obSalesOrderShipment=new SalesOrderShipment();
+                                                                  _obSalesOrderShipment.TrackingNumber=_reader["TrackingNumber"].Equals(System.DBNull.Value)?  null : _reader["TrackingNumber"].ToString();
+
+                                              _obSalesOrderSchedule.SalesOrderShipment=_obSalesOrderShipment;
+                          SalesOrderLine _obSalesOrderLine=new SalesOrderLine();
+                                        _obSalesOrderLine.SalesOrderSchedule=_obSalesOrderSchedule;
+
+
+                SalesOrderHeader _obSalesOrderHeader = new SalesOrderHeader();                   
+                                _obSalesOrderHeader.OrderHeader=_obOrderHeader;
+                           
+
+                _lstSalesOrderHeader.Add(_obSalesOrderHeader);
+                _lstSalesOrderLine.Add(_obSalesOrderLine);
+                          
+                          
+                            DataArea _obDataArea=new DataArea();
+                           _obDataArea.SalesOrderHeader=_lstSalesOrderHeader;
+                           _obDataArea.SalesOrderLine=_lstSalesOrderLine;
+                          _lstDataArea.Add(_obDataArea);
+
+                       
+                }
+                else 
+                {
+
+                     _obMsFaultNotification= faultMessageMapping(_microserviceName,DateTime.Now.ToString(),_msBusinessFaultCode,_msBusinessFault,_reader["ErrorMessage"].ToString(),"");
+                      
+                }
+             }
+             return _lstDataArea;
+         }
+
+     /// <summary>
+    /// This fundtion is used to map the Message Header Fault Details Response to Microservice CDM.
+    /// </summary>
+     /// <returns>Returns the DataArea Array/List of Sales Order.</returns>
+								  public FaultNotification faultMessageMapping(string _microserviceName,string _dateTime,string _msBusinessFaultCode,string _msBusinessFault,string _businessFaultDescription,string _faultTrace )
+								  {
+                     FaultNotification _obMsFaultNotification = new FaultNotification();
+								        try{
+                             
+                             FaultMessage _obFaultMessage=new FaultMessage(); 
+								    _obMsFaultNotification.BusinessComponentID=_microserviceName; 
+                                  _obMsFaultNotification.ReportingDateTime=_dateTime;
+                                          _obFaultMessage.FaultCode=_msBusinessFaultCode; 
+                                          _obFaultMessage.FaultCategory=_msBusinessFault; 
+                                          _obFaultMessage.FaultDescription=_businessFaultDescription; 
+                                          _obFaultMessage.FaultTrace=_faultTrace;
+                                  _obMsFaultNotification.FaultMessage=_obFaultMessage;
+                        }
+                        catch(Exception ex)
+                        {
+                                  Response _obResponse=new Response();
+                                  _obResponse.ErrorCode=System.Environment.GetEnvironmentVariable("TECHNICAL_FAULT_CODE"); 
+                                  _obResponse.ErrorTrace=ex.StackTrace.ToString();
+                                  _obResponse.DateTime=DateTime.Now;
+                                  _obResponse.ErrorMessage=System.Environment.GetEnvironmentVariable("TECHNICAL_FAULT"); 
+                                  _obResponse.ErrorTrace=ex.Message.ToString();
+                                  _obResponse.ResponseCode="500";
+                                  _obResponse.ResponseStatus=System.Environment.GetEnvironmentVariable("TECHNICAL_FAULT"); 
+                                 // _obResponse.RequestId=_transactionId.ToString();
+                                  _obResponse.ActionRecommended=System.Environment.GetEnvironmentVariable("TECHNICAL_FAULT_ACTION"); 
+
+                         
+                        }
+								  return _obMsFaultNotification;
+								  }
          public class GetOrderHistoryResponse
     {
         [JsonProperty("SalesOrder")]
