@@ -94,7 +94,7 @@ namespace emrsn.com.fun.datalake
 
             log.LogInformation($"********Started Order History Microservice with  Trnsaction Id = {_transactionId} , ****************");   
             log.LogInformation($"******** Trnsaction Id = {_transactionId} , Input Query Params : #InstanceID, #CustomerAccId, #FromDate, #ToDate, #OrderNumber, #CustomerPoNumber, # OrderStatusCode, #OrderStatus, #OrderedFrom, #SerialNumber, #GSOrderNumber, #OrderedBy, #ActionType, #RecipientEmailId, #LanguageCode, #SourceSystem  ****");   
-            log.LogInformation($"******** Trnsaction Id = {_transactionId} , Values : # { _InstanceID } ,# { _CustomerAccId } ,# { _FromDate } ,# { _ToDate } ,# { _OrderNumber } ,# { _CustomerPoNumber } ,# { _OrderStatus } ,# { _OrderStatusCode } ,# { _OrderedFrom } ,# { _SerialNumber } ,# { _GSOrderNumber } ,# { _OrderedBy } ,# { _ActionType } ,# { _RecipientEmailId } ,# { _LanguageCode } ,# { _SourceSystem }  ****");               
+            log.LogInformation($"******** Trnsaction Id for this request = {_transactionId} , Values : # { _InstanceID } ,# { _CustomerAccId } ,# { _FromDate } ,# { _ToDate } ,# { _OrderNumber } ,# { _CustomerPoNumber } ,# { _OrderStatus } ,# { _OrderStatusCode } ,# { _OrderedFrom } ,# { _SerialNumber } ,# { _GSOrderNumber } ,# { _OrderedBy } ,# { _ActionType } ,# { _RecipientEmailId } ,# { _LanguageCode } ,# { _SourceSystem }  ****");               
               try{         
             _obCOnnection.OpenConection();   
               
