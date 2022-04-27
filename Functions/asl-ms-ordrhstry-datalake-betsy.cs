@@ -12,7 +12,6 @@ using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using System.Data.SqlClient;
 using System;
-using System.Data; 
 
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 
@@ -43,7 +42,7 @@ namespace emrsn.com.fun.datalake
         [OpenApiParameter(name: "LanguageCode", In = ParameterLocation.Query, Required = false, Type = typeof(string), Description = "Language Code")]
         [OpenApiParameter(name: "SourceSystem", In = ParameterLocation.Query, Required = false, Type = typeof(string), Description = "Source System of Request")]
         
-      //  [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SalesOrder), Description = "The OK response")]
+      
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrder), Description = "Successfully Completed")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.InternalServerError, contentType: "application/json", bodyType: typeof(Response), Description = "Server Error")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.BadRequest, contentType: "application/json", bodyType: typeof(Response), Description = "Bad Request")]
@@ -88,10 +87,7 @@ string inputParams=_InstanceID + ","+ _CustomerAccId + "," +_FromDate + "," +_To
            
               List<DataArea> _lstDataArea =new List<DataArea>();
               FaultNotification _obMsFaultNotification = new FaultNotification();
-              FaultMessage _obFaultMessage=new FaultMessage();
-
-
-            
+              FaultMessage _obFaultMessage=new FaultMessage();            
 
             log.LogInformation($"********Started Order History Microservice with  Trnsaction Id = {_transactionId} , ****************");   
             log.LogInformation($"******** Trnsaction Id = {_transactionId} , Input Query Params : #InstanceID, #CustomerAccId, #FromDate, #ToDate, #OrderNumber, #CustomerPoNumber, # OrderStatusCode, #OrderStatus, #OrderedFrom, #SerialNumber, #GSOrderNumber, #OrderedBy, #ActionType, #RecipientEmailId, #LanguageCode, #SourceSystem  ****");   
@@ -101,11 +97,9 @@ string inputParams=_InstanceID + ","+ _CustomerAccId + "," +_FromDate + "," +_To
               
            string _statement =System.Environment.GetEnvironmentVariable("SQL_CMD_ORERHISTORY_BETSY"); 
           
-           // SqlDataReader _reader =_obCOnnection.DataReader(_statement,_InstanceID,_CustomerAccId,_FromDate,_ToDate,_OrderNumber,_CustomerPoNumber, _OrderStatusCode,_OrderStatus,_OrderedFrom,_SerialNumber,_GSOrderNumber,_OrderedBy,_ActionType,_RecipientEmailId,_LanguageCode);
+           
  SqlDataReader _reader =_obCOnnection.DataReader(_statement,_sqlDbParams);
 
-  if(_reader.HasRows)
-  {
                 while (_reader.Read())
                 {
                     if(_reader["ErrorFlag"].ToString()!="Y")
@@ -118,7 +112,7 @@ string inputParams=_InstanceID + ","+ _CustomerAccId + "," +_FromDate + "," +_To
 
 
 
-// *****************  Set "Sales Order Header"  part of CDM ************* //                   
+             
    OrderHeader _obOrderHeader=new OrderHeader();
               
                _obOrderHeader.OriginatingSystem= _reader["SourceSystem"].ToString();		
@@ -178,18 +172,7 @@ string inputParams=_InstanceID + ","+ _CustomerAccId + "," +_FromDate + "," +_To
 
                 }
              }
-  }
-            else
-            {
-                                _obMsFaultNotification.BusinessComponentID=_microserviceName; 
-                                  _obMsFaultNotification.ReportingDateTime=DateTime.Now.ToString();
-                                          _obFaultMessage.FaultCode=_msBusinessFaultCode; 
-                                          _obFaultMessage.FaultCategory=_msBusinessFault; 
-                                          _obFaultMessage.FaultDescription=System.Environment.GetEnvironmentVariable("BUSINESS_FAULT_NO_DATA"); 
-                                          _obFaultMessage.FaultTrace="";
-                                  _obMsFaultNotification.FaultMessage=_obFaultMessage;
-
-            }
+ 
                        _obCOnnection.CloseConnection();  
                       }
                 catch (Exception ex)
