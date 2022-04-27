@@ -66,8 +66,6 @@ namespace emrsn.com.fun.datalake
             string _msBusinessFaultCode=System.Environment.GetEnvironmentVariable("BUSINESS_FAULT_CODE"); 
             string _msBusinessFault =System.Environment.GetEnvironmentVariable("BUSINESS_FAULT"); 
 
-            
-
                     string _InstanceID= System.Environment.GetEnvironmentVariable("INSTANCE_ID_BETSY"); 
                     string _CustomerAccId= req.Query["CustomerAccId"];
                     string _FromDate= req.Query["FromDate"];
@@ -91,7 +89,7 @@ namespace emrsn.com.fun.datalake
            
               List<DataArea> _lstDataArea =new List<DataArea>();
               FaultNotification _obMsFaultNotification = new FaultNotification();
-              FaultMessage _obFaultMessage=new FaultMessage(); 
+            //  FaultMessage _obFaultMessage=new FaultMessage(); 
               
           
 
@@ -174,15 +172,11 @@ namespace emrsn.com.fun.datalake
           
               List<DataArea> _lstDataArea =new List<DataArea>();
               FaultNotification _obMsFaultNotification = new FaultNotification();
-              FaultMessage _obFaultMessage=new FaultMessage(); 
-
                 while (_reader.Read())
                 {
                     if(_reader["ErrorFlag"].ToString()!="Y")
                     {                                 
            
-             List<OrderHeader> _lsOrderHeader =new List<OrderHeader>();
-             List<PaymentTerm> _lstPaymentTerm=new List<PaymentTerm>();
              List<SalesOrderHeader> _lstSalesOrderHeader=new List<SalesOrderHeader>();
              List<SalesOrderLine> _lstSalesOrderLine=new List<SalesOrderLine>();                
                OrderHeader _obOrderHeader=new OrderHeader();              
@@ -195,7 +189,7 @@ namespace emrsn.com.fun.datalake
                _obOrderHeader.OrderDate=Convert.ToDateTime(_reader["OrderDate"]);
                _obOrderHeader.CurrencyCode=_reader["OrderCurrencyCode"].Equals(System.DBNull.Value)?  null : _reader["OrderCurrencyCode"].ToString();
                _obOrderHeader.OrderStatus=_reader["GroupedOrderStatus"].Equals(System.DBNull.Value)?  null: _reader["GroupedOrderStatus"].ToString();
-               _obOrderHeader.EBSOU=_reader["OperatingUnitTesting"].Equals(System.DBNull.Value)?  null : _reader["OperatingUnit"].ToString();
+               _obOrderHeader.EBSOU=_reader["OperatingUnit"].Equals(System.DBNull.Value)?  null : _reader["OperatingUnit"].ToString();
                _obOrderHeader.BookedBy=_reader["SoldToContactID"].Equals(System.DBNull.Value)? null : _reader["SoldToContactID"].ToString();             
                _obOrderHeader.OrderSource=_reader["OrganizationID"].Equals(System.DBNull.Value)? null : _reader["OrganizationID"].ToString();		
               _obOrderHeader.AssociatedAccount=_CustomerAccId;
