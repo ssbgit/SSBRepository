@@ -100,7 +100,7 @@ namespace emrsn.com.fun.datalake
             SqlParameter param7 = new SqlParameter();
             param7.ParameterName =  _param[7].ToString();
             param7.SqlDbType = SqlDbType.VarChar;
-            param7.Value = _sqlDbParams[7];;
+            param7.Value = _sqlDbParams[7];
             
             cmd.Parameters.Add(param7);
 
@@ -114,7 +114,7 @@ namespace emrsn.com.fun.datalake
             SqlParameter param9 = new SqlParameter();
             param9.ParameterName =  _param[9].ToString();
             param9.SqlDbType = SqlDbType.VarChar;
-            param9.Value =_sqlDbParams[9];;
+            param9.Value =_sqlDbParams[9];
             cmd.Parameters.Add(param9);
 			
             SqlParameter param10 = new SqlParameter();

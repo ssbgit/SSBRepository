@@ -1,11 +1,5 @@
 using System.IO;
 using System.Collections.Generic;
-using System.Net;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
-using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Abstractions;
 using System;
 using System.Linq;
@@ -13,8 +7,7 @@ using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Configurations;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Comparers;
 using Microsoft.OpenApi.Models;
-using Microsoft.Azure.Functions.Worker.Core;
-using Microsoft.Azure.Functions.Worker.Extensions;
+
 
 
 
@@ -28,11 +21,9 @@ namespace emrsn.com.fun.datalake
     {
         private const string OpenApiDocVersionKey = "OpenApi__DocVersion";
         private const string OpenApiDocTitleKey = "OpenApi__DocTitle";
-        private const string OpenApiHostNamesKey = "OpenApi__HostNames";
         private const string OpenApiVersionKey = "OpenApi__Version";
         private const string FunctionsRuntimeEnvironmentKey = "AZURE_FUNCTIONS_ENVIRONMENT";
-        private const string ForceHttpKey = "OpenApi__ForceHttp";
-        private const string ForceHttpsKey = "OpenApi__ForceHttps";
+
 
         /// <inheritdoc />
         public virtual OpenApiInfo Info { get; set; } = new OpenApiInfo()
@@ -49,19 +40,18 @@ namespace emrsn.com.fun.datalake
         new OpenApiServer() { Url = " http://fa-z-autosol-microservice-n-001.azurewebsites.net/api/asl-ms-ordrhstry-datalake-betsy/getOrderHistoryBetsy" , Description= "Stage server" },
          new OpenApiServer() { Url = " http://fa-z-autosol-microservice-p-001.azurewebsites.net/api/asl-ms-ordrhstry-datalake-betsy/getOrderHistoryBetsy" , Description= "Production server" },
     };
-        public virtual List<OpenApiTag> OpenApiTags { get; set; } = GetTagValues();
-
+       
         /// <inheritdoc />
         public virtual OpenApiVersionType OpenApiVersion { get; set; } = GetOpenApiVersion();
 
         /// <inheritdoc />
-        public virtual bool IncludeRequestingHostName { get; set; } = IsFunctionsRuntimeEnvironmentDevelopment();
+        public virtual bool IncludeRequestingHostName { get; set; } = true;
 
         /// <inheritdoc />
-        public virtual bool ForceHttp { get; set; } = IsHttpForced();
+        public virtual bool ForceHttp { get; set; } = false;
 
         /// <inheritdoc />
-        public virtual bool ForceHttps { get; set; } = IsHttpsForced();
+        public virtual bool ForceHttps { get; set; } = true;
 
         /// <inheritdoc />
         public virtual List<IDocumentFilter> DocumentFilters { get; set; } = new List<IDocumentFilter>();
@@ -157,23 +147,13 @@ namespace emrsn.com.fun.datalake
         /// Checks whether HTTP is forced or not.
         /// </summary>
         /// <returns>Returns <c>True</c>, if HTTP is forced; otherwise returns <c>False</c>.</returns>
-        protected static bool IsHttpForced()
-        {
-            var development = bool.TryParse(Environment.GetEnvironmentVariable(ForceHttpKey), out var result) ? result : false;
-
-            return development;
-        }
+       
 
         /// <summary>
         /// Checks whether HTTPS is forced or not.
         /// </summary>
         /// <returns>Returns <c>True</c>, if HTTPS is forced; otherwise returns <c>False</c>.</returns>
-        protected static bool IsHttpsForced()
-        {
-            var development = bool.TryParse(Environment.GetEnvironmentVariable(ForceHttpsKey), out var result) ? result : false;
-
-            return development;
-        }
+      
 
         private static OpenApiVersionType DefaultOpenApiVersion()
         {

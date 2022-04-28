@@ -59,10 +59,7 @@ namespace emrsn.com.fun.datalake
             Initialising business fault variables
             */
 
-            string _microserviceName=System.Environment.GetEnvironmentVariable("MS_INTERFACE_BETSY"); 
-            string _msBusinessFaultCode=System.Environment.GetEnvironmentVariable("BUSINESS_FAULT_CODE"); 
-            string _msBusinessFault =System.Environment.GetEnvironmentVariable("BUSINESS_FAULT"); 
-
+           
                     string _InstanceID= System.Environment.GetEnvironmentVariable("INSTANCE_ID_BETSY"); 
                     string _CustomerAccId= req.Query["CustomerAccId"];
                     string _FromDate= req.Query["FromDate"];
@@ -94,6 +91,11 @@ string inputParams=_InstanceID + ","+ _CustomerAccId + "," +_FromDate + "," +_To
             log.LogInformation($"******** Trnsaction Id = {_transactionId} , Values : # { _InstanceID } ,# { _CustomerAccId } ,# { _FromDate } ,# { _ToDate } ,# { _OrderNumber } ,# { _CustomerPoNumber } ,# { _OrderStatus } ,# { _OrderStatusCode } ,# { _OrderedFrom } ,# { _SerialNumber } ,# { _GSOrderNumber } ,# { _OrderedBy } ,# { _ActionType } ,# { _RecipientEmailId } ,# { _LanguageCode } ,# { _SourceSystem }  ****");               
               try{         
             _obCOnnection.OpenConection();   
+
+             string _microserviceName=System.Environment.GetEnvironmentVariable("MS_INTERFACE_BETSY"); 
+            string _msBusinessFaultCode=System.Environment.GetEnvironmentVariable("BUSINESS_FAULT_CODE"); 
+            string _msBusinessFault ="BUSINESS_FAULT"; 
+
               
            string _statement =System.Environment.GetEnvironmentVariable("SQL_CMD_ORERHISTORY_BETSY"); 
           
@@ -109,28 +111,25 @@ string inputParams=_InstanceID + ","+ _CustomerAccId + "," +_FromDate + "," +_To
              List<PaymentTerm> _lstPaymentTerm=new List<PaymentTerm>();
              List<SalesOrderHeader> _lstSalesOrderHeader=new List<SalesOrderHeader>();
              List<SalesOrderLine> _lstSalesOrderLine=new List<SalesOrderLine>();
-
-
-
              
    OrderHeader _obOrderHeader=new OrderHeader();
               
                _obOrderHeader.OriginatingSystem= _reader["SourceSystem"].ToString();		
                _obOrderHeader.OrderGID=_reader["GOSNumber"].Equals(System.DBNull.Value)? null : _reader["GOSNumber"].ToString();		
-               _obOrderHeader.OrgId=_reader["OrganizationID"].Equals(System.DBNull.Value)? null : _reader["OrganizationID"].ToString();		
+               _obOrderHeader.OrgId= _reader["OrganizationID"].ToString();		
                _obOrderHeader.CustomerPONbr= _reader["CustomerPONumber"].ToString();
                _obOrderHeader.OrderNbr= _reader["OrderNumber"].ToString();
                _obOrderHeader.HeaderId= _reader["HeaderID"].ToString();
                _obOrderHeader.OrderDate=Convert.ToDateTime(_reader["OrderDate"]);
                _obOrderHeader.CurrencyCode=_reader["OrderCurrencyCode"].ToString();
                _obOrderHeader.OrderStatus= _reader["GroupedOrderStatus"].ToString();
-               _obOrderHeader.EBSOU=_reader["OperatingUnit"].Equals(System.DBNull.Value)?  null : _reader["OperatingUnit"].ToString();
-               _obOrderHeader.BookedBy=_reader["SoldToContactID"].Equals(System.DBNull.Value)? null : _reader["SoldToContactID"].ToString();             
-               _obOrderHeader.OrderSource=_reader["OrganizationID"].Equals(System.DBNull.Value)? null : _reader["OrganizationID"].ToString();		
+               _obOrderHeader.EBSOU= _reader["OperatingUnit"].ToString();
+               _obOrderHeader.BookedBy=_reader["SoldToContactID"].Equals(System.DBNull.Value)? null : _reader["SoldToContactID"].ToString();  
+               _obOrderHeader.OrderSource=_reader["OrganizationID"].ToString();		
               _obOrderHeader.AssociatedAccount=_CustomerAccId;
 
          ShippingProfile _obSHippingProfile=new ShippingProfile();
-                         _obSHippingProfile.ShipCode= _reader["ShippingMethodID"].Equals(System.DBNull.Value)?  null : _reader["ShippingMethodID"].ToString();
+                         _obSHippingProfile.ShipCode= _reader["ShippingMethodDescription"].Equals(System.DBNull.Value)?  null : _reader["ShippingMethodDescription"].ToString();
               
                _obOrderHeader.ShippingProfile=_obSHippingProfile;
 
@@ -178,14 +177,17 @@ string inputParams=_InstanceID + ","+ _CustomerAccId + "," +_FromDate + "," +_To
                 catch (Exception ex)
                 {
                         _obCOnnection.CloseConnection();
+
+                         log.LogInformation($"********  Transaction Id = {_transactionId} ,  Error  Details  = {ex.Message.ToString()}  ****************");   
+                          log.LogInformation($"********End of the Microservice with Error Transaction Id = {_transactionId}  ****************");   
                            Response _obResponse=new Response();
                                   _obResponse.ErrorCode=System.Environment.GetEnvironmentVariable("TECHNICAL_FAULT_CODE"); 
                                   _obResponse.ErrorTrace=ex.StackTrace.ToString();
                                   _obResponse.DateTime=DateTime.Now;
-                                  _obResponse.ErrorMessage=System.Environment.GetEnvironmentVariable("TECHNICAL_FAULT"); 
+                                  _obResponse.ErrorMessage="TECHNICAL_FAULT"; 
                                   _obResponse.ErrorTrace=ex.Message.ToString();
                                   _obResponse.ResponseCode="500";
-                                  _obResponse.ResponseStatus=System.Environment.GetEnvironmentVariable("TECHNICAL_FAULT"); 
+                                  _obResponse.ResponseStatus="TECHNICAL_FAULT"; 
                                   _obResponse.RequestId=_transactionId.ToString();
                                   _obResponse.ActionRecommended=System.Environment.GetEnvironmentVariable("TECHNICAL_FAULT_ACTION"); 
 
