@@ -15,8 +15,6 @@ namespace emrsn.com.fun.datalake
         {
 			[JsonProperty("OrderHeader")]
         public OrderHeader OrderHeader { get; set; }
-	//	[JsonProperty("PaymentTerm")]
-      //  public PaymentTerm PaymentTerm { get; set; }
 
 }
  public class OrderHeader
