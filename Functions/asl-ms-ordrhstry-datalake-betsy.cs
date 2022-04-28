@@ -107,8 +107,6 @@ string inputParams=_InstanceID + ","+ _CustomerAccId + "," +_FromDate + "," +_To
                     if(_reader["ErrorFlag"].ToString()!="Y")
                     {                                 
            
-             List<OrderHeader> _lsOrderHeader =new List<OrderHeader>();
-             List<PaymentTerm> _lstPaymentTerm=new List<PaymentTerm>();
              List<SalesOrderHeader> _lstSalesOrderHeader=new List<SalesOrderHeader>();
              List<SalesOrderLine> _lstSalesOrderLine=new List<SalesOrderLine>();
              

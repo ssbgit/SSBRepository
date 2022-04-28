@@ -3,14 +3,8 @@ using System.Collections.Generic;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Abstractions;
 using System;
 using System.Linq;
-using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Configurations;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
-using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Comparers;
 using Microsoft.OpenApi.Models;
-
-
-
-
 
 namespace emrsn.com.fun.datalake
 {
@@ -62,7 +56,7 @@ namespace emrsn.com.fun.datalake
         /// <returns>Returns the OpenAPI document version.</returns>
         protected static string GetOpenApiDocVersion()
         {
-            var version = Environment.GetEnvironmentVariable(OpenApiDocVersionKey) ?? DefaultOpenApiDocVersion();
+            var version = Environment.GetEnvironmentVariable(OpenApiDocVersionKey) ?? "1.0.0";
 
             return version;
         }
@@ -73,7 +67,7 @@ namespace emrsn.com.fun.datalake
         /// <returns>Returns the OpenAPI document title.</returns>
         protected static string GetOpenApiDocTitle()
         {
-            var title = Environment.GetEnvironmentVariable(OpenApiDocTitleKey) ?? DefaultOpenApiDocTitle();
+            var title = Environment.GetEnvironmentVariable(OpenApiDocTitleKey) ?? "OpenAPI Document on Auto Sol Microservice Implementation.";
 
             return title;
         }
@@ -160,14 +154,6 @@ namespace emrsn.com.fun.datalake
             return OpenApiVersionType.V3;
         }
 
-        private static string DefaultOpenApiDocVersion()
-        {
-            return "1.0.0";
-        }
-
-        private static string DefaultOpenApiDocTitle()
-        {
-            return "OpenAPI Document on Auto Sol Microservice design.";
-        }
+       
     }
 }
